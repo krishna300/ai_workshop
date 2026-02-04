@@ -1,6 +1,6 @@
-from typing import TypedDict
-from langgraph.graph import StateGraph
-import os
+from typing import Dict, TypedDict
+from langgraph.graph import StateGraph 
+from utilities.utility import export_graph_image
 
 class AgentState(TypedDict): # Our state schema
     message : str 
@@ -14,25 +14,16 @@ def greeting_node(state: AgentState) -> AgentState:
 
 def build_graph():
     graph = StateGraph(AgentState)
+
     graph.add_node("greeter", greeting_node)
+
     graph.set_entry_point("greeter")
     graph.set_finish_point("greeter")
+
     return graph.compile()
 
-def run_graph(name: str):
+def run_graph(data):
     app = build_graph()
-    export_graph_image(app)
-    return app.invoke({"message": name})
+    export_graph_image(app, "greeting.png")
 
-def export_graph_image(app):
-    assets_dir = os.path.join(
-        os.path.dirname(__file__), "..", "assets"
-    )
-    os.makedirs(assets_dir, exist_ok=True)
-
-    graph_path = os.path.join(assets_dir, "greeting_graph.png")
-
-    with open(graph_path, "wb") as f:
-        f.write(app.get_graph().draw_png())
-
-    print(f"✅ Graph image saved at: {graph_path}")
+    return app.invoke(data)

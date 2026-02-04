@@ -4,6 +4,8 @@ docker container prune
 docker rmi <image_id>
 
 docker-compose up --build
+docker-compose up
+docker-compose down
 docker-compose restart
 
 docker exec -it basics_container bash
